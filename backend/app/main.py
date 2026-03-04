@@ -1,0 +1,69 @@
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from app.core.config import settings
+from app.core.database import get_db, get_base, get_engine
+from app.models import models
+from app.api.endpoints import learning, student, psychology, auth, assessment, assessment_bank
+
+# Create all tables
+Base = get_base()
+engine = get_engine()
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    openapi_url=f"{settings.API_V1_STR}/openapi.json"
+)
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    print(f"Global Exception: {exc}") # Print to console/logs
+    return JSONResponse(
+        status_code=500,
+        content={"detail": f"Internal Server Error: {str(exc)}"},
+    )
+
+# Set all CORS enabled origins
+# Set all CORS enabled origins
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://127.0.0.1",
+    "http://127.0.0.1:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(learning.router, prefix="/api/v1/learning", tags=["learning"])
+
+
+app.include_router(student.router, prefix="/api/v1/student", tags=["student"])
+app.include_router(assessment.router, prefix="/api/v1/assessment", tags=["assessment"])
+app.include_router(psychology.router, prefix="/api/v1/psychology", tags=["psychology"])
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
+app.include_router(assessment_bank.router, prefix="/api/v1/assessment", tags=["assessment-bank"])
+
+@app.on_event("startup")
+def startup_event():
+    # Tables are created by alembic or manually via seed_db.py usually, 
+    # but for dev convenience we can keep create_all
+    Base = get_base()
+    engine = get_engine()
+    Base.metadata.create_all(bind=engine)
+    print("Database initialized.")
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok", "app_name": settings.PROJECT_NAME}
+
+@app.get("/")
+def root():
+    return {"message": "Welcome to the Personalized AI Tutor API"}
