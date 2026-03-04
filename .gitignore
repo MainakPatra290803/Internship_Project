@@ -1,0 +1,17 @@
+# Root level gitignore
+.DS_Store
+Thumbs.db
+
+# Deployment logs (project root level)
+*.log
+
+# SQLite databases at root level
+*.db
+*.sqlite
+
+# Environment files
+.env
+
+# Python venv in root (if any)
+venv/
+__pycache__/

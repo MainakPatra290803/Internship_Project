@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Virtual environment
+venv/
+env/
+.venv/
+.env/
+
+# Environment variables (never commit actual secrets!)
+.env
+.env.local
+.env.production
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+server*.log
+backend*.log
+frontend*.log
+
+# Debug / temp scripts
+verify_*.py
+check_*.py
+debug_*.py
+debug_*.log
+reproduce_*.py
+inspect_*.py
+list_*.py
+migrate_*.py
+seed_cse_db.py
+force_*.py
+force_*.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Build output
+dist/
+build/

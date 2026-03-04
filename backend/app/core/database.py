@@ -11,8 +11,12 @@ def get_engine():
     global _engine
     if _engine is None:
         from sqlalchemy import create_engine
+        connect_args = {}
+        if settings.DATABASE_URL.startswith("sqlite"):
+            connect_args["check_same_thread"] = False
+            
         _engine = create_engine(
-            settings.DATABASE_URL, connect_args={"check_same_thread": False}
+            settings.DATABASE_URL, connect_args=connect_args
         )
     return _engine
 

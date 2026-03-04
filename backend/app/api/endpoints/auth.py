@@ -150,7 +150,7 @@ async def login(request: schemas.LoginRequest = Body(...), db: Session = Depends
         raise HTTPException(status_code=400, detail="Incorrect email or password")
         
     # Generate Token
-    access_token_expires = timedelta(minutes=security.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = security.create_access_token(
         data={"sub": user.email, "role": user.role, "id": user.id}, expires_delta=access_token_expires
     )
