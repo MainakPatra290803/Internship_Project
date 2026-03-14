@@ -84,6 +84,55 @@ function LoginForm() {
         }
     };
 
+    const handleRequestReset = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const res = await fetch('/api/v1/auth/request-password-reset', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await res.json();
+
+            if (!res.ok) throw new Error(data.detail || 'Failed to send reset code');
+
+            setSuccess('Reset code sent to your email!');
+            setResetStep(2);
+        } catch (err: any) {
+            setError(err.message || 'An error occurred. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleConfirmReset = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const res = await fetch('/api/v1/auth/reset-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email,
+                    otp: resetCode,
+                    new_password: newPassword
+                })
+            });
+            const data = await res.json();
+
+            if (!res.ok) throw new Error(data.detail || 'Failed to reset password');
+
+            setSuccess('Password changed successfully! You can now log in.');
+            setShowReset(false);
+            setResetStep(1);
+        } catch (err: any) {
+            setError(err.message || 'An error occurred. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     return (
         <Card className="max-w-md w-full p-8 border-purple-500/20 bg-gray-900/50 backdrop-blur-xl">
