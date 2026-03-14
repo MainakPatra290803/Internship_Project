@@ -17,6 +17,8 @@ services:
         generateValue: true
       - key: GOOGLE_API_KEY
         sync: false   # Set manually in Render dashboard
+      - key: GOOGLE_CLIENT_ID
+        sync: false   # Set manually in Render dashboard
       - key: FRONTEND_URL
         sync: false   # Set to your frontend Render URL
       - key: USE_LOCAL_LLM
@@ -43,3 +45,5 @@ services:
           property: host
       - key: NODE_VERSION
         value: "22.16.0"
+      - key: NEXT_PUBLIC_GOOGLE_CLIENT_ID
+        sync: false   # Set manually in Render dashboard
