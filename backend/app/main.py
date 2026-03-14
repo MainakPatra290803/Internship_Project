@@ -85,25 +85,12 @@ def startup_event():
 
 
 @app.get("/health")
-def health_check(db: Session = Depends(get_db)):
-    health_status = {
+def health_check():
+    return {
         "status": "ok",
         "app_name": settings.PROJECT_NAME,
-        "database": "connected",
-        "models_status": {
-            "yolo_cfg": os.path.exists("models/yolov3-tiny.cfg"),
-            "yolo_weights": os.path.exists("models/yolov3-tiny.weights")
-        }
+        "models_verified": os.path.exists("models/yolov3-tiny.cfg")
     }
-    
-    # Try a simple DB query
-    try:
-        db.execute(text("SELECT 1"))
-    except Exception as e:
-        health_status["database"] = f"error: {str(e)}"
-        health_status["status"] = "error"
-        
-    return health_status
 
 @app.get("/")
 def root():

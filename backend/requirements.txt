@@ -33,19 +33,12 @@ google-generativeai>=0.3.2
 anthropic>=0.10.0
 Pillow>=10.2.0
 
-# ML / Deep Learning (The "Transformer" stack)
-torch
-transformers
-accelerate
+# ML / Deep Learning (REMOVED HEAVY LIBRARIES FOR STABILITY)
+# torch, transformers, accelerate, stable-baselines3 removed
 scipy
 numpy>=1.26.3
 pandas>=2.2.0
 scikit-learn>=1.4.0
-ctransformers
-
-# RL / Env
-gymnasium
-stable-baselines3
 
 # Async
 anyio>=4.0.0
