@@ -41,3 +41,5 @@ services:
           name: ai-tutor-backend
           type: web
           property: host
+      - key: NODE_VERSION
+        value: "22.16.0"
