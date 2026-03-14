@@ -1,9 +1,11 @@
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request, Depends, Body
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 import os
+import traceback
+from datetime import datetime
 from app.core.config import settings
 from app.core.database import get_db, get_base, get_engine
 from app.models import models
@@ -27,17 +29,31 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    if isinstance(exc, StarletteHTTPException):
-        # Let FastAPI's default handler (or specific ones) take care of HTTPExceptions
-        return await request.app.default_exception_handlers[StarletteHTTPException](request, exc)
-
-    error_msg = f"Global Exception at {request.url.path}: {str(exc)}"
-    print(error_msg)
+    import traceback
+    error_details = traceback.format_exc()
+    
+    # Log to console
+    print(f"--- CRITICAL ERROR at {request.url.path} ---")
+    print(error_details)
+    
+    # Log to file
     with open("error_log.txt", "a") as f:
-        f.write(f"{error_msg}\n")
+        f.write(f"\n[{datetime.utcnow()}] ERROR at {request.url.path}:\n{error_details}\n")
+        
+    # Determine detail and status code
+    detail = str(exc)
+    status_code = 500
+    
+    if hasattr(exc, "detail"):
+        detail = exc.detail
+    if hasattr(exc, "status_code"):
+        status_code = exc.status_code
+        
+    print(f"Returning {status_code}: {detail}")
+    
     return JSONResponse(
-        status_code=500,
-        content={"detail": f"Internal Server Error: {str(exc)}"},
+        status_code=status_code,
+        content={"detail": f"{type(exc).__name__}: {detail}"},
     )
 
 # Build CORS allowed origins - includes localhost for dev + any configured production frontend

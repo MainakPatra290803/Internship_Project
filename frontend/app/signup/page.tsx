@@ -55,7 +55,7 @@ export default function SignupPage() {
                 throw new Error(text || 'Server error during signup');
             }
 
-            if (!res.ok) throw new Error(data.detail || 'Signup failed');
+            if (!res.ok) throw new Error(`[${res.status}] ${data.detail || 'Signup failed'}`);
 
             if (data.access_token) {
                 localStorage.setItem('token', data.access_token);
@@ -88,7 +88,7 @@ export default function SignupPage() {
                 throw new Error(text || 'Server error during Google Signup');
             }
 
-            if (!res.ok) throw new Error(data.detail || 'Google Signup failed');
+            if (!res.ok) throw new Error(`[${res.status}] ${data.detail || 'Google Signup failed'}`);
 
             if (data.access_token) {
                 localStorage.setItem('token', data.access_token);

@@ -46,7 +46,7 @@ function LoginForm() {
                 throw new Error(text || 'Server error during Login');
             }
 
-            if (!res.ok) throw new Error(data.detail || 'Login failed');
+            if (!res.ok) throw new Error(`[${res.status}] ${data.detail || 'Login failed'}`);
 
             // Store Token
             localStorage.setItem('token', data.access_token);
@@ -85,7 +85,7 @@ function LoginForm() {
                 throw new Error(text || 'Server error during Google Login');
             }
 
-            if (!res.ok) throw new Error(data.detail || 'Google Login failed');
+            if (!res.ok) throw new Error(`[${res.status}] ${data.detail || 'Google Login failed'}`);
 
             // Store Token
             localStorage.setItem('token', data.access_token);
