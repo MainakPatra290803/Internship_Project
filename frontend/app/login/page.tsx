@@ -68,7 +68,14 @@ function LoginForm() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ credential: credentialResponse.credential })
             });
-            const data = await res.json();
+
+            let data;
+            try {
+                data = await res.json();
+            } catch (jsonErr) {
+                const text = await res.text();
+                throw new Error(text || 'Server error during Google Login');
+            }
 
             if (!res.ok) throw new Error(data.detail || 'Google Login failed');
 

@@ -46,7 +46,15 @@ export default function SignupPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, otp, password })
             });
-            const data = await res.json();
+
+            let data;
+            try {
+                data = await res.json();
+            } catch (jsonErr) {
+                const text = await res.text();
+                throw new Error(text || 'Server error during signup');
+            }
+
             if (!res.ok) throw new Error(data.detail || 'Signup failed');
 
             if (data.access_token) {
@@ -71,7 +79,14 @@ export default function SignupPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ credential: credentialResponse.credential })
             });
-            const data = await res.json();
+
+            let data;
+            try {
+                data = await res.json();
+            } catch (jsonErr) {
+                const text = await res.text();
+                throw new Error(text || 'Server error during Google Signup');
+            }
 
             if (!res.ok) throw new Error(data.detail || 'Google Signup failed');
 
