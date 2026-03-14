@@ -46,3 +46,54 @@ class BKTModel:
         Predicts probability of correct answer given mastery.
         """
         return p_known * (1 - self.p_slip) + (1 - p_known) * self.p_guess
+
+    def evaluate_performance(self, observations: list) -> dict:
+        """
+        Evaluates the model's accuracy and RMSE based on a sequence of observations.
+        observations: list of booleans (True for correct, False for incorrect)
+        Returns: Dict containing accuracy, rmse, and final_mastery.
+        """
+        p_known = self.p_init
+        predictions = []
+        actuals = []
+        
+        for obs in observations:
+            # Predict before seeing the result
+            pred_prob = self.predict_correctness(p_known)
+            predictions.append(pred_prob)
+            actuals.append(1.0 if obs else 0.0)
+            
+            # Update knowledge state for the next step
+            p_known = self.update_mastery(p_known, obs)
+            
+        # Calculate Metrics
+        actuals = np.array(actuals)
+        predictions = np.array(predictions)
+        
+        # RMSE: Root Mean Square Error
+        rmse = np.sqrt(np.mean((actuals - predictions)**2))
+        
+        # Binary Accuracy (using 0.5 threshold for prediction)
+        binary_preds = (predictions >= 0.5)
+        accuracy = np.mean(binary_preds == observations)
+        
+        return {
+            "accuracy": float(accuracy),
+            "rmse": float(rmse),
+            "final_mastery_level": float(p_known),
+            "total_observations": len(observations)
+        }
+
+if __name__ == "__main__":
+    # Self-test demonstration for panel members
+    model = BKTModel()
+    # Sample learning curve: student gets one wrong, then learns and gets 4 right
+    test_data = [False, True, True, True, True]
+    results = model.evaluate_performance(test_data)
+    
+    print("--- BKT Model Performance Verification ---")
+    print(f"Sample Observations: {test_data}")
+    print(f"Predictive Accuracy: {results['accuracy'] * 100:.1f}%")
+    print(f"RMSE (Error Rate): {results['rmse']:.4f}")
+    print(f"Final Mastery Probability: {results['final_mastery_level']:.4f}")
+    print("------------------------------------------")

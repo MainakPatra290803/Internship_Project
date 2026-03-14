@@ -4,7 +4,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.database import get_db, get_base, get_engine
 from app.models import models
-from app.api.endpoints import learning, student, psychology, auth, assessment, assessment_bank
+from app.api.endpoints import learning, student, psychology, auth, assessment, assessment_bank, ai_features, planner
+
+from fastapi.staticfiles import StaticFiles
+from fastapi import WebSocket, WebSocketDisconnect
+import json
 
 # Create all tables
 Base = get_base()
@@ -55,6 +59,13 @@ app.include_router(assessment.router, prefix="/api/v1/assessment", tags=["assess
 app.include_router(psychology.router, prefix="/api/v1/psychology", tags=["psychology"])
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(assessment_bank.router, prefix="/api/v1/assessment", tags=["assessment-bank"])
+app.include_router(ai_features.router, prefix="/api/v1/ai", tags=["ai-features"])
+app.include_router(planner.router, prefix="/api/v1/planner", tags=["planner"])
+
+
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
+
 
 @app.on_event("startup")
 def startup_event():

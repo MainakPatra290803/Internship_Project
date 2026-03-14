@@ -15,6 +15,18 @@ class LoginRequest(BaseModel):
     email: str
     password: str
 
+class GoogleLoginRequest(BaseModel):
+    credential: str
+
+
+class PasswordResetRequest(BaseModel):
+    email: str
+
+class PasswordResetConfirm(BaseModel):
+    email: str
+    otp: str
+    new_password: str
+
 class CustomQuizRequest(BaseModel):
     subject: str
     topic: str
@@ -72,6 +84,10 @@ class QuestionResponse(BaseModel):
     question_id: int
     answer: str
     time_taken: float
+
+class SRSReviewSubmit(BaseModel):
+    content_item_id: int
+    quality: int # 0-5
 
 # --- Chat ---
 class ChatMessage(BaseModel):
@@ -154,3 +170,42 @@ class ProctorSessionTelemetry(BaseModel):
     session_id: int
     event: str
     timestamp: str
+
+# --- Planner ---
+class StudyTaskBase(BaseModel):
+    title: str
+    description: str
+    task_type: str
+    day_number: int
+    estimated_minutes: int
+    is_completed: bool = False
+
+class StudyTaskCreate(StudyTaskBase):
+    concept_id: Optional[int] = None
+
+class StudyTask(StudyTaskBase):
+    id: int
+    plan_id: int
+    concept_id: Optional[int] = None
+
+    class Config:
+        from_attributes = True
+
+class StudyPlanBase(BaseModel):
+    topic_id: int
+    duration_days: int
+
+class StudyPlanCreate(StudyPlanBase):
+    pass
+
+class StudyPlan(StudyPlanBase):
+    id: int
+    student_id: int
+    target_topic: str
+    focus_areas: List[str] = []
+    status: str
+    created_at: datetime
+    tasks: List[StudyTask] = []
+    
+    class Config:
+        from_attributes = True

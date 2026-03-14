@@ -5,7 +5,6 @@ import json
 import asyncio
 import google.genai as genai
 from google.genai import types as genai_types
-import openai
 from PIL import Image
 import io
 import base64
@@ -128,76 +127,14 @@ class LocalLLMProvider(LLMProvider):
             return {"error": "Failed to generate JSON locally", "raw": text}
 
 
-class OpenAIProvider(LLMProvider):
-    def __init__(self, api_key: str):
-        self.client = openai.AsyncOpenAI(api_key=api_key)
 
-    async def generate_text(self, system_prompt: str, user_prompt: str) -> str:
-        try:
-            # Using new Responses API as requested
-            prompt = f"System: {system_prompt}\nUser: {user_prompt}"
-            response = await self.client.responses.create(
-                model="gpt-5-nano",
-                input=prompt
-            )
-            # Assuming response structure matches user snippet: response.output_text
-            # Use getattr to be safe if attribute is missing
-            return getattr(response, "output_text", str(response))
-        except Exception as e:
-            print(f"OpenAI Text Error: {e}")
-            return "I'm having trouble thinking right now. Please try again."
-
-    async def generate_chat_response(self, messages: List[Dict[str, str]], system_prompt: Optional[str] = None) -> str:
-        try:
-            # Convert messages to string format for 'input'
-            prompt_parts = []
-            if system_prompt:
-                prompt_parts.append(f"System: {system_prompt}")
-            
-            for m in messages:
-                role = m["role"].capitalize()
-                prompt_parts.append(f"{role}: {m['content']}")
-            
-            full_prompt = "\n".join(prompt_parts)
-
-            response = await self.client.responses.create(
-                model="gpt-5-nano",
-                input=full_prompt
-            )
-            return getattr(response, "output_text", str(response))
-        except Exception as e:
-            print(f"OpenAI Chat Error: {e}")
-            return "I'm having trouble following the conversation. Can you repeat that?"
-
-    async def generate_json(self, system_prompt: str, user_prompt: str, schema: Dict[str, Any]) -> Dict[str, Any]:
-        try:
-            # Responses API might support json via input instructions for now
-            prompt = f"System: {system_prompt}\nUser: {user_prompt}\nIMPORTANT: Output ONLY valid JSON."
-            response = await self.client.responses.create(
-                model="gpt-5-nano",
-                input=prompt
-            )
-            content = getattr(response, "output_text", "")
-            if not content and hasattr(response, "choices"): # Fallback if structure is different
-                 content = response.choices[0].message.content
-                 
-            # Clean markdown
-            if content.startswith("```json"):
-                content = content.replace("```json", "").replace("```", "")
-            elif content.startswith("```"):
-                content = content.replace("```", "")
-
-            return json.loads(content)
-        except Exception as e:
-            print(f"OpenAI JSON Error: {e}")
-            return {"error": "Failed to generate structured data", "details": str(e)}
 
 
 class GoogleGeminiProvider(LLMProvider):
     def __init__(self, api_key: str):
         # New official google-genai SDK (v1+)
         self.client = genai.Client(api_key=api_key)
-        self.model_name = "models/gemini-2.5-flash-lite"
+        self.model_name = "models/gemini-2.5-flash" 
 
     async def generate_text(self, system_prompt: str, user_prompt: str) -> str:
         try:
@@ -261,8 +198,48 @@ class GoogleGeminiProvider(LLMProvider):
             print(f"DEBUG LLM ERROR: Gemini JSON Error: {type(e).__name__}: {str(e)}")
             return {"error": "Failed to generate structured data", "details": str(e)}
 
+    async def analyze_multimodal(
+        self, 
+        prompt: str, 
+        image_data: Optional[bytes] = None, 
+        image_mime: str = "image/jpeg",
+        audio_data: Optional[bytes] = None, 
+        audio_mime: str = "audio/mpeg",
+        system_prompt: Optional[str] = None
+    ) -> str:
+        """
+        Generic multimodal method for Gemini.
+        """
+        parts = []
+        if image_data:
+            parts.append(genai_types.Part.from_bytes(data=image_data, mime_type=image_mime))
+        if audio_data:
+            parts.append(genai_types.Part.from_bytes(data=audio_data, mime_type=audio_mime))
+        
+        parts.append(genai_types.Part.from_text(text=prompt))
+
+        config = None
+        if system_prompt:
+            config = genai_types.GenerateContentConfig(system_instruction=system_prompt)
+
+        try:
+            response = await self.client.aio.models.generate_content(
+                model=self.model_name,
+                contents=parts,
+                config=config
+            )
+            return response.text
+        except Exception as e:
+            print(f"Gemini Multimodal Error: {e}")
+            return f"Error processing multimodal input: {str(e)}"
+
 
 def get_llm_client() -> LLMProvider:
+    # Always re-read .env to pick up any hot-swapped API keys (e.g. from Google AI Studio)
+    import os
+    from dotenv import load_dotenv
+    load_dotenv(override=True)
+
     if os.getenv("USE_LOCAL_LLM", "false").lower() == "true":
         model_name = os.getenv("LOCAL_MODEL_NAME", "TinyLlama/TinyLlama-1.1B-Chat-v1.0")
         print(f"Using Local LLM Provider: {model_name}")
@@ -270,13 +247,10 @@ def get_llm_client() -> LLMProvider:
 
     google_key = os.getenv("GOOGLE_API_KEY")
     if google_key:
-        print("Using Google Gemini Provider")
+        print(f"Using Google Gemini Provider (Key: {google_key[:6]}...)")
         return GoogleGeminiProvider(google_key)
 
-    openai_key = os.getenv("OPENAI_API_KEY")
-    if openai_key:
-        print("Using OpenAI Provider")
-        return OpenAIProvider(openai_key)
+
     
     print("Using Mock Provider (No API Key found)")
     return MockLLM()

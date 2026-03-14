@@ -105,7 +105,8 @@ CODING_QUESTIONS = [
             "Java": "import java.util.*;\npublic class Main {\n    static int fib(int n) {\n        // Your code here\n        return 0;\n    }\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        System.out.println(fib(sc.nextInt()));\n    }\n}",
             "C++": "#include<bits/stdc++.h>\nusing namespace std;\nint fib(int n){\n    // Your code here\n    return 0;\n}\nint main(){ int n; cin>>n; cout<<fib(n); }",
             "JavaScript": "const n = parseInt(require('fs').readFileSync('/dev/stdin','utf8').trim());\nfunction fib(n) { /* Your code */ }\nconsole.log(fib(n));",
-        }
+        },
+        "solution_code": "def fib(n):\n    if n <= 1: return n\n    a, b = 0, 1\n    for _ in range(2, n+1):\n        a, b = b, a + b\n    return b\nn = int(input())\nprint(fib(n))"
     },
     {
         "id": 5, "title": "Maximum Subarray", "difficulty": "Medium",
@@ -131,7 +132,8 @@ CODING_QUESTIONS = [
             "Java": "import java.util.*;\npublic class Main {\n    static int maxSubArray(int[] nums) {\n        // Your code here\n        return 0;\n    }\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] nums = new int[n];\n        for(int i=0;i<n;i++) nums[i]=sc.nextInt();\n        System.out.println(maxSubArray(nums));\n    }\n}",
             "C++": "#include<bits/stdc++.h>\nusing namespace std;\nint maxSubArray(vector<int>& nums){\n    // Your code here\n    return 0;\n}\nint main(){\n    int n; cin>>n;\n    vector<int> nums(n);\n    for(auto& x: nums) cin>>x;\n    cout<<maxSubArray(nums);\n}",
             "JavaScript": "const lines = require('fs').readFileSync('/dev/stdin','utf8').trim().split('\\n');\nconst n = parseInt(lines[0]);\nconst nums = lines[1].split(' ').map(Number);\nfunction maxSubArray(nums) { /* Kadane's */ }\nconsole.log(maxSubArray(nums));",
-        }
+        },
+        "solution_code": "def maxSubArray(nums):\n    max_sum = cur_sum = nums[0]\n    for num in nums[1:]:\n        cur_sum = max(num, cur_sum + num)\n        max_sum = max(max_sum, cur_sum)\n    return max_sum\nn = int(input())\nnums = list(map(int, input().split()))\nprint(maxSubArray(nums))"
     },
     {
         "id": 6, "title": "Binary Search", "difficulty": "Easy",
@@ -157,7 +159,8 @@ CODING_QUESTIONS = [
             "Java": "import java.util.*;\npublic class Main {\n    static int search(int[] nums, int target) {\n        // Your code here\n        return -1;\n    }\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] nums = new int[n];\n        for(int i=0;i<n;i++) nums[i]=sc.nextInt();\n        System.out.println(search(nums, sc.nextInt()));\n    }\n}",
             "C++": "#include<bits/stdc++.h>\nusing namespace std;\nint search(vector<int>& nums, int target){\n    // Your code here\n    return -1;\n}\nint main(){\n    int n; cin>>n;\n    vector<int> nums(n);\n    for(auto& x:nums) cin>>x;\n    int t; cin>>t;\n    cout<<search(nums,t);\n}",
             "JavaScript": "const lines = require('fs').readFileSync('/dev/stdin','utf8').trim().split('\\n');\nconst nums = lines[1].split(' ').map(Number);\nconst target = parseInt(lines[2]);\nfunction search(nums, target) { /* Binary search */ }\nconsole.log(search(nums, target));",
-        }
+        },
+        "solution_code": "def search(nums, target):\n    lo, hi = 0, len(nums) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if nums[mid] == target: return mid\n        elif nums[mid] < target: lo = mid + 1\n        else: hi = mid - 1\n    return -1\nn = int(input())\nnums = list(map(int, input().split()))\ntarget = int(input())\nprint(search(nums, target))"
     },
     {
         "id": 7, "title": "Merge Two Sorted Arrays", "difficulty": "Easy",
@@ -183,7 +186,8 @@ CODING_QUESTIONS = [
             "Java": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int m = sc.nextInt(); int[] a = new int[m];\n        for(int i=0;i<m;i++) a[i]=sc.nextInt();\n        int n = sc.nextInt(); int[] b = new int[n];\n        for(int i=0;i<n;i++) b[i]=sc.nextInt();\n        // Merge and print\n    }\n}",
             "C++": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n    int m; cin>>m; vector<int> a(m);\n    for(auto& x:a) cin>>x;\n    int n; cin>>n; vector<int> b(n);\n    for(auto& x:b) cin>>x;\n    a.insert(a.end(),b.begin(),b.end());\n    sort(a.begin(),a.end());\n    for(int i=0;i<a.size();i++) cout<<(i?\" \":\"\")<< a[i];\n}",
             "JavaScript": "const lines = require('fs').readFileSync('/dev/stdin','utf8').trim().split('\\n');\n// Parse and merge",
-        }
+        },
+        "solution_code": "m = int(input())\nnums1 = list(map(int, input().split())) if m > 0 else []\nn = int(input())\nnums2 = list(map(int, input().split())) if n > 0 else []\nresult = sorted(nums1 + nums2)\nprint(*result)"
     },
     {
         "id": 8, "title": "Climbing Stairs", "difficulty": "Easy",
@@ -206,7 +210,8 @@ CODING_QUESTIONS = [
             "Java": "import java.util.*;\npublic class Main {\n    static int climbStairs(int n) {\n        // DP solution\n        return 0;\n    }\n    public static void main(String[] args) {\n        System.out.println(climbStairs(new Scanner(System.in).nextInt()));\n    }\n}",
             "C++": "#include<bits/stdc++.h>\nusing namespace std;\nint climbStairs(int n){\n    // DP\n    return 0;\n}\nint main(){ int n; cin>>n; cout<<climbStairs(n); }",
             "JavaScript": "const n = parseInt(require('fs').readFileSync('/dev/stdin','utf8').trim());\nfunction climbStairs(n) { /* DP */ }\nconsole.log(climbStairs(n));",
-        }
+        },
+        "solution_code": "def climbStairs(n):\n    if n <= 2: return n\n    a, b = 1, 2\n    for _ in range(3, n+1):\n        a, b = b, a + b\n    return b\nn = int(input())\nprint(climbStairs(n))"
     },
     {
         "id": 9, "title": "Longest Common Subsequence", "difficulty": "Medium",
@@ -232,7 +237,8 @@ CODING_QUESTIONS = [
             "Java": "import java.util.*;\npublic class Main {\n    static int lcs(String s, String t) {\n        // DP solution\n        return 0;\n    }\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        System.out.println(lcs(sc.nextLine(), sc.nextLine()));\n    }\n}",
             "C++": "#include<bits/stdc++.h>\nusing namespace std;\nint lcs(string s, string t){\n    // DP\n    return 0;\n}\nint main(){\n    string s, t; cin>>s>>t;\n    cout<<lcs(s,t);\n}",
             "JavaScript": "const lines = require('fs').readFileSync('/dev/stdin','utf8').trim().split('\\n');\nfunction lcs(s, t) { /* DP */ }\nconsole.log(lcs(lines[0], lines[1]));",
-        }
+        },
+        "solution_code": "def lcs(text1, text2):\n    m, n = len(text1), len(text2)\n    dp = [[0]*(n+1) for _ in range(m+1)]\n    for i in range(1, m+1):\n        for j in range(1, n+1):\n            if text1[i-1] == text2[j-1]:\n                dp[i][j] = dp[i-1][j-1] + 1\n            else:\n                dp[i][j] = max(dp[i-1][j], dp[i][j-1])\n    return dp[m][n]\ntext1 = input()\ntext2 = input()\nprint(lcs(text1, text2))"
     },
     {
         "id": 10, "title": "Number of Islands", "difficulty": "Medium",
@@ -258,7 +264,8 @@ CODING_QUESTIONS = [
             "Java": "import java.util.*;\npublic class Main {\n    static void dfs(char[][] g, int i, int j) {\n        if(i<0||i>=g.length||j<0||j>=g[0].length||g[i][j]=='0') return;\n        g[i][j]='0';\n        dfs(g,i+1,j); dfs(g,i-1,j); dfs(g,i,j+1); dfs(g,i,j-1);\n    }\n    public static void main(String[] args) {\n        // Read grid and count islands\n    }\n}",
             "C++": "#include<bits/stdc++.h>\nusing namespace std;\nvoid dfs(vector<vector<char>>& g, int i, int j){\n    if(i<0||i>=g.size()||j<0||j>=g[0].size()||g[i][j]=='0') return;\n    g[i][j]='0';\n    dfs(g,i+1,j); dfs(g,i-1,j); dfs(g,i,j+1); dfs(g,i,j-1);\n}\nint main(){ /* Read and count */ }",
             "JavaScript": "// Read input and implement BFS/DFS island counting",
-        }
+        },
+        "solution_code": "def numIslands(grid):\n    if not grid: return 0\n    m, n = len(grid), len(grid[0])\n    def dfs(i, j):\n        if i<0 or i>=m or j<0 or j>=n or grid[i][j]=='0': return\n        grid[i][j]='0'\n        dfs(i+1,j); dfs(i-1,j); dfs(i,j+1); dfs(i,j-1)\n    count = 0\n    for i in range(m):\n        for j in range(n):\n            if grid[i][j] == '1':\n                dfs(i, j)\n                count += 1\n    return count\nm, n = map(int, input().split())\ngrid = [input().split() for _ in range(m)]\nprint(numIslands(grid))"
     },
 ]
 
@@ -285,7 +292,8 @@ for i in range(11, 21):
             "Java": f"import java.util.*;\npublic class Main {{\n    public static void main(String[] args) {{\n        // Problem {i}\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        System.out.println(n * 2);\n    }}\n}}",
             "C++": f"#include<bits/stdc++.h>\nusing namespace std;\nint main(){{\n    int n; cin>>n;\n    // Problem {i}\n    cout<<n*2;\n}}",
             "JavaScript": f"const n = parseInt(require('fs').readFileSync('/dev/stdin','utf8').trim());\n// Problem {i}\nconsole.log(n * 2);",
-        }
+        },
+        "solution_code": f"# Problem {i} — Optimal Solution\nn = int(input())\nprint(n * 2)"  # placeholder solution
     })
 
 # ─── SQL QUESTIONS ────────────────────────────────────────────────────────────
@@ -416,36 +424,152 @@ Output:
 +---------------------+"""
     },
 ]
-# Extend SQL to 15
-for i in range(4, 16):
-    SQL_QUESTIONS.append({
-        "id": i, "title": f"SQL Problem {i}", "difficulty": "Medium",
-        "statement": f"SQL problem {i}: Write a query involving JOINs, aggregations, or subqueries on the given schema.",
-        "schema": f"""CREATE TABLE Orders (id INT, customer_id INT, amount DECIMAL(10,2), date DATE);
-CREATE TABLE Customers (id INT, name VARCHAR(100), city VARCHAR(50));
-INSERT INTO Orders VALUES {','.join(f'({j},{j%3+1},{j*100.0},{2024}-01-{j:02d})' for j in range(1,6))};
-INSERT INTO Customers VALUES (1,'Alice','NYC'),(2,'Bob','LA'),(3,'Charlie','Chicago');""",
-        "task": f"Find customers and their total order amounts for problem {i}.",
-        "sample_test_cases": [
-            {"description": "Expected output", "result": "Alice: 300.00\nBob: 500.00\nCharlie: 200.00"},
-        ],
-        "expected_result": f"Results for problem {i}",
-        "example_block": f"""Input:
-Orders table:
-+----+-------------+--------+------------+
-| id | customer_id | amount | date       |
-+----+-------------+--------+------------+
-| 1  | 2           | 100.00 | 2024-01-01 |
-| 2  | 3           | 200.00 | 2024-01-02 |
-| 3  | 1           | 300.00 | 2024-01-03 |
-+----+-------------+--------+------------+
-
-Output:
-+---------+--------------+
-| name    | total_amount |
-+---------+--------------+
-| Alice   | 300.00       |
-| Bob     | 500.00       |
-| Charlie | 200.00       |
-+---------+--------------+"""
-    })
+# Extend SQL to 15 with real distinct questions
+SQL_QUESTIONS += [
+    {
+        "id": 4, "title": "Customers with Orders", "difficulty": "Medium",
+        "statement": "Find all customers who have placed at least one order. Use a JOIN between Customers and Orders tables.",
+        "schema": """CREATE TABLE Customers (id INT, name VARCHAR(100), city VARCHAR(50));
+CREATE TABLE Orders (id INT, customer_id INT, amount DECIMAL(10,2));
+INSERT INTO Customers VALUES (1,'Alice','NYC'),(2,'Bob','LA'),(3,'Charlie','Chicago'),(4,'Diana','NYC');
+INSERT INTO Orders VALUES (1,1,300),(2,2,150),(3,1,200);""",
+        "task": "Find names of customers who have placed at least one order.",
+        "sample_test_cases": [{"description": "Expected", "result": "Alice\nBob"}],
+        "expected_result": "Alice, Bob",
+        "solution_query": "SELECT DISTINCT c.name FROM Customers c JOIN Orders o ON c.id = o.customer_id ORDER BY c.name;",
+        "example_block": "Output: Alice, Bob (customers who have orders)"
+    },
+    {
+        "id": 5, "title": "Total Orders Per Customer", "difficulty": "Medium",
+        "statement": "Find the total amount spent by each customer. Show customer name and their total spending.",
+        "schema": """CREATE TABLE Customers (id INT, name VARCHAR(100));
+CREATE TABLE Orders (id INT, customer_id INT, amount DECIMAL(10,2));
+INSERT INTO Customers VALUES (1,'Alice'),(2,'Bob'),(3,'Charlie');
+INSERT INTO Orders VALUES (1,1,200),(2,1,300),(3,2,150),(4,3,400),(5,2,100);""",
+        "task": "Show each customer's name and their total order amount, ordered by total descending.",
+        "sample_test_cases": [{"description": "Expected", "result": "Alice:500\nCharlie:400\nBob:250"}],
+        "expected_result": "Alice:500, Charlie:400, Bob:250",
+        "solution_query": "SELECT c.name, SUM(o.amount) AS total_amount FROM Customers c JOIN Orders o ON c.id = o.customer_id GROUP BY c.name ORDER BY total_amount DESC;",
+        "example_block": "Output: Alice|500, Charlie|400, Bob|250"
+    },
+    {
+        "id": 6, "title": "Employees Without a Manager", "difficulty": "Easy",
+        "statement": "Find all employees who do not report to any manager (i.e., their manager_id is NULL).",
+        "schema": """CREATE TABLE Employees (id INT, name VARCHAR(100), manager_id INT);
+INSERT INTO Employees VALUES (1,'Alice',NULL),(2,'Bob',1),(3,'Charlie',1),(4,'Diana',2);""",
+        "task": "Write a query to find the names of all top-level employees (no manager).",
+        "sample_test_cases": [{"description": "Expected", "result": "Alice"}],
+        "expected_result": "Alice",
+        "solution_query": "SELECT name FROM Employees WHERE manager_id IS NULL;",
+        "example_block": "Output: Alice"
+    },
+    {
+        "id": 7, "title": "Departments with More Than 2 Employees", "difficulty": "Medium",
+        "statement": "Find all departments that have more than 2 employees. Return the department name and the employee count.",
+        "schema": """CREATE TABLE Employees (id INT, name VARCHAR(100), department VARCHAR(50));
+INSERT INTO Employees VALUES
+(1,'Alice','Engineering'),(2,'Bob','Engineering'),(3,'Charlie','Engineering'),
+(4,'Diana','HR'),(5,'Eve','Marketing'),(6,'Frank','Marketing');""",
+        "task": "Show departments with more than 2 employees, along with their count.",
+        "sample_test_cases": [{"description": "Expected", "result": "Engineering: 3"}],
+        "expected_result": "Engineering: 3",
+        "solution_query": "SELECT department, COUNT(*) AS emp_count FROM Employees GROUP BY department HAVING COUNT(*) > 2;",
+        "example_block": "Output: Engineering | 3"
+    },
+    {
+        "id": 8, "title": "Highest Paid in Each Department", "difficulty": "Hard",
+        "statement": "Find the highest paid employee in each department. Show department, employee name, and their salary.",
+        "schema": """CREATE TABLE Employees (id INT, name VARCHAR(100), department VARCHAR(50), salary INT);
+INSERT INTO Employees VALUES
+(1,'Alice','Engineering',90000),(2,'Bob','Engineering',75000),
+(3,'Charlie','Marketing',60000),(4,'Diana','Marketing',55000),(5,'Eve','HR',50000);""",
+        "task": "Find the highest paid employee per department.",
+        "sample_test_cases": [{"description": "Expected", "result": "Engineering:Alice(90000)\nMarketing:Charlie(60000)\nHR:Eve(50000)"}],
+        "expected_result": "Engineering:Alice, Marketing:Charlie, HR:Eve",
+        "solution_query": "SELECT department, name, salary FROM Employees e WHERE salary = (SELECT MAX(salary) FROM Employees WHERE department = e.department) ORDER BY department;",
+        "example_block": "Output: Engineering|Alice|90000, Marketing|Charlie|60000, HR|Eve|50000"
+    },
+    {
+        "id": 9, "title": "Orders Above Average Amount", "difficulty": "Medium",
+        "statement": "Find all orders whose amount is above the average order amount across all orders.",
+        "schema": """CREATE TABLE Orders (id INT, customer_id INT, amount DECIMAL(10,2));
+INSERT INTO Orders VALUES (1,1,100),(2,2,500),(3,3,200),(4,1,800),(5,2,150);""",
+        "task": "Return all order IDs and amounts where amount > average amount.",
+        "sample_test_cases": [{"description": "Expected", "result": "id=2:500\nid=4:800"}],
+        "expected_result": "Orders 2 (500) and 4 (800)",
+        "solution_query": "SELECT id, amount FROM Orders WHERE amount > (SELECT AVG(amount) FROM Orders) ORDER BY amount DESC;",
+        "example_block": "Average = 350. Output: id=4|800, id=2|500"
+    },
+    {
+        "id": 10, "title": "Order Count Per City", "difficulty": "Medium",
+        "statement": "Count how many orders were placed by customers from each city.",
+        "schema": """CREATE TABLE Customers (id INT, name VARCHAR(100), city VARCHAR(50));
+CREATE TABLE Orders (id INT, customer_id INT, amount DECIMAL(10,2));
+INSERT INTO Customers VALUES (1,'Alice','NYC'),(2,'Bob','LA'),(3,'Charlie','NYC'),(4,'Diana','Chicago');
+INSERT INTO Orders VALUES (1,1,300),(2,2,150),(3,3,200),(4,1,100),(5,4,400);""",
+        "task": "Show each city and the total number of orders from customers in that city.",
+        "sample_test_cases": [{"description": "Expected", "result": "NYC:3\nLA:1\nChicago:1"}],
+        "expected_result": "NYC:3, LA:1, Chicago:1",
+        "solution_query": "SELECT c.city, COUNT(o.id) AS order_count FROM Customers c JOIN Orders o ON c.id = o.customer_id GROUP BY c.city ORDER BY order_count DESC;",
+        "example_block": "Output: NYC|3, Chicago|1, LA|1"
+    },
+    {
+        "id": 11, "title": "Duplicate Emails", "difficulty": "Easy",
+        "statement": "Find all emails in the Person table that appear more than once.",
+        "schema": """CREATE TABLE Person (id INT, email VARCHAR(100));
+INSERT INTO Person VALUES (1,'alice@test.com'),(2,'bob@test.com'),(3,'alice@test.com'),(4,'charlie@test.com'),(5,'bob@test.com');""",
+        "task": "Write a query to find all duplicate email addresses.",
+        "sample_test_cases": [{"description": "Expected", "result": "alice@test.com\nbob@test.com"}],
+        "expected_result": "alice@test.com, bob@test.com",
+        "solution_query": "SELECT email FROM Person GROUP BY email HAVING COUNT(*) > 1 ORDER BY email;",
+        "example_block": "Output: alice@test.com, bob@test.com"
+    },
+    {
+        "id": 12, "title": "Rising Temperature Days", "difficulty": "Easy",
+        "statement": "Find all dates where the temperature was higher than the previous day's temperature.",
+        "schema": """CREATE TABLE Weather (id INT, recordDate DATE, temperature INT);
+INSERT INTO Weather VALUES (1,'2024-01-01',15),(2,'2024-01-02',18),(3,'2024-01-03',16),(4,'2024-01-04',20);""",
+        "task": "Return the IDs of days where temperature was higher than the previous day.",
+        "sample_test_cases": [{"description": "Expected", "result": "id=2\nid=4"}],
+        "expected_result": "IDs 2 and 4",
+        "solution_query": "SELECT w1.id FROM Weather w1 JOIN Weather w2 ON DATEDIFF(w1.recordDate, w2.recordDate) = 1 WHERE w1.temperature > w2.temperature;",
+        "example_block": "Output: id=2 (18>15 on Jan 2), id=4 (20>16 on Jan 4)"
+    },
+    {
+        "id": 13, "title": "Customers Who Never Ordered", "difficulty": "Medium",
+        "statement": "Find all customers who have never placed an order. Use LEFT JOIN or NOT IN.",
+        "schema": """CREATE TABLE Customers (id INT, name VARCHAR(100));
+CREATE TABLE Orders (id INT, customer_id INT, amount DECIMAL(10,2));
+INSERT INTO Customers VALUES (1,'Alice'),(2,'Bob'),(3,'Charlie'),(4,'Diana');
+INSERT INTO Orders VALUES (1,1,200),(2,3,150);""",
+        "task": "Return the names of customers who have no orders.",
+        "sample_test_cases": [{"description": "Expected", "result": "Bob\nDiana"}],
+        "expected_result": "Bob, Diana",
+        "solution_query": "SELECT name FROM Customers WHERE id NOT IN (SELECT DISTINCT customer_id FROM Orders) ORDER BY name;",
+        "example_block": "Output: Bob, Diana (no entries in Orders)"
+    },
+    {
+        "id": 14, "title": "Rank Employees by Salary", "difficulty": "Hard",
+        "statement": "Rank all employees by their salary in descending order. Employees with the same salary should receive the same rank.",
+        "schema": """CREATE TABLE Employees (id INT, name VARCHAR(100), salary INT);
+INSERT INTO Employees VALUES (1,'Alice',90000),(2,'Bob',75000),(3,'Charlie',90000),(4,'Diana',60000);""",
+        "task": "Rank employees by salary (highest = rank 1). Equal salaries get the same rank.",
+        "sample_test_cases": [{"description": "Expected", "result": "Alice:1\nCharlie:1\nBob:3\nDiana:4"}],
+        "expected_result": "Alice:1, Charlie:1, Bob:3, Diana:4",
+        "solution_query": "SELECT name, salary, RANK() OVER (ORDER BY salary DESC) AS salary_rank FROM Employees;",
+        "example_block": "Output: Alice|90000|1, Charlie|90000|1, Bob|75000|3, Diana|60000|4"
+    },
+    {
+        "id": 15, "title": "Monthly Revenue", "difficulty": "Hard",
+        "statement": "Calculate the total revenue per month from the Orders table. Group by year and month.",
+        "schema": """CREATE TABLE Orders (id INT, amount DECIMAL(10,2), order_date DATE);
+INSERT INTO Orders VALUES
+(1,500,'2024-01-15'),(2,300,'2024-01-22'),(3,800,'2024-02-05'),
+(4,200,'2024-02-18'),(5,1000,'2024-03-10'),(6,450,'2024-03-25');""",
+        "task": "Show total revenue grouped by year and month, ordered chronologically.",
+        "sample_test_cases": [{"description": "Expected", "result": "2024-01:800\n2024-02:1000\n2024-03:1450"}],
+        "expected_result": "Jan:800, Feb:1000, Mar:1450",
+        "solution_query": "SELECT YEAR(order_date) AS year, MONTH(order_date) AS month, SUM(amount) AS total_revenue FROM Orders GROUP BY YEAR(order_date), MONTH(order_date) ORDER BY year, month;",
+        "example_block": "Output: 2024|1|800.00, 2024|2|1000.00, 2024|3|1450.00"
+    },
+]

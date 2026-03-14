@@ -3,40 +3,37 @@ services:
   # Backend FastAPI Service
   # ========================
   - type: web
-    name: agentic-ai-tutor-backend
+    name: ai-tutor-backend
     runtime: python
     region: oregon
     plan: free
     rootDir: backend
     buildCommand: chmod +x build.sh && ./build.sh
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    # Persistent Disk for SQLite
+    disk:
+      name: sqlite-data
+      mountPath: /var/data
+      sizeGB: 1
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: agentic-ai-db
-          property: connectionString
+        value: sqlite:////var/data/sql_app.db
       - key: SECRET_KEY
         generateValue: true
       - key: GOOGLE_API_KEY
         sync: false   # Set manually in Render dashboard
-      - key: QUIZ_API_KEY
-        sync: false   # Set manually in Render dashboard
       - key: FRONTEND_URL
-        sync: false   # Set to your frontend Render URL e.g. https://agentic-ai-tutor.onrender.com
+        sync: false   # Set to your frontend Render URL
       - key: USE_LOCAL_LLM
         value: "false"
-      - key: MAIL_USERNAME
-        sync: false
-      - key: MAIL_PASSWORD
-        sync: false
       - key: MAIL_FROM
-        sync: false
+        value: noreply@aitutor.com
 
   # ========================
   # Frontend Next.js Service
   # ========================
   - type: web
-    name: agentic-ai-tutor-frontend
+    name: ai-tutor-frontend
     runtime: node
     region: oregon
     plan: free
@@ -46,17 +43,7 @@ services:
     envVars:
       - key: NEXT_PUBLIC_BACKEND_URL
         fromService:
-          name: agentic-ai-tutor-backend
+          name: ai-tutor-backend
           type: web
           property: host
           envVarKey: RENDER_EXTERNAL_URL
-
-# ========================
-# PostgreSQL Database
-# ========================
-databases:
-  - name: agentic-ai-db
-    region: oregon
-    plan: free
-    databaseName: agenticai
-    user: agenticai_user

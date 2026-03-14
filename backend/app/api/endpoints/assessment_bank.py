@@ -159,7 +159,7 @@ def run_against_testcases(req: CodeRunRequest):
                 (len(sample_results) + total_hidden))
 
     return {
-        "sample_results": sample_results,
+        "sample": sample_results,
         "hidden": {"passed": hidden_pass, "total": total_hidden},
         "score": score,
         "verdict": "Accepted" if score == 100 else f"Wrong Answer ({score}%)"

@@ -147,6 +147,19 @@ class Interaction(Base):
     student = relationship("Student", back_populates="interactions")
     content_item = relationship("ContentItem", back_populates="interactions")
 
+class SpacedRepetitionState(Base):
+    __tablename__ = "spaced_repetition_states"
+    id = Column(Integer, primary_key=True, index=True)
+    student_id = Column(Integer, ForeignKey("students.student_id"))
+    content_item_id = Column(Integer, ForeignKey("content_items.id"))
+    easiness_factor = Column(Float, default=2.5)
+    interval = Column(Integer, default=0)
+    repetition = Column(Integer, default=0)
+    next_review_date = Column(DateTime, default=datetime.utcnow)
+    
+    student = relationship("Student")
+    content_item = relationship("ContentItem")
+
 class DomainMastery(Base):
     __tablename__ = "domain_mastery"
     id = Column(Integer, primary_key=True, index=True)
@@ -222,3 +235,35 @@ class ProctorSession(Base):
 
     user = relationship("User")
     assessment = relationship("Assessment", back_populates="sessions")
+
+# --- Planner ---
+class StudyPlan(Base):
+    __tablename__ = "study_plans"
+    id = Column(Integer, primary_key=True, index=True)
+    student_id = Column(Integer, ForeignKey("students.student_id"))
+    topic_id = Column(Integer, ForeignKey("topics.id"), nullable=True) # Linking to actual DB Subject
+    target_topic = Column(String)
+    focus_areas = Column(JSON, default=[]) # e.g. ["Arrays", "Pointers"]
+    duration_days = Column(Integer)
+    status = Column(String, default="active") # active, completed
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    student = relationship("Student")
+    topic = relationship("Topic")
+    tasks = relationship("StudyTask", back_populates="plan", cascade="all, delete")
+
+class StudyTask(Base):
+    __tablename__ = "study_tasks"
+    id = Column(Integer, primary_key=True, index=True)
+    plan_id = Column(Integer, ForeignKey("study_plans.id"))
+    concept_id = Column(Integer, ForeignKey("concepts.id"), nullable=True) # Linking to actual DB Concept
+    title = Column(String)
+    description = Column(Text)
+    task_type = Column(String) # theory, practice, quiz
+    day_number = Column(Integer)
+    estimated_minutes = Column(Integer)
+    is_completed = Column(Boolean, default=False)
+    
+    plan = relationship("StudyPlan", back_populates="tasks")
+    concept = relationship("Concept")
+

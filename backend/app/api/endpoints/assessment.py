@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, WebSocket, WebSocketDisconnect
 from sqlalchemy.orm import Session
 from typing import Dict, Any, List
 import uuid
+import base64
 
 from app.core.database import get_db
 from app.models import models
@@ -9,6 +10,7 @@ from app.schemas import schemas
 from app.core.llm import generate_assessment_problem
 from app.core.execution import sandbox
 from app.api import deps
+from app.core import proctoring
 
 router = APIRouter()
 
@@ -267,3 +269,33 @@ def receive_telemetry(telemetry_in: schemas.ProctorSessionTelemetry, db: Session
     db.commit()
     return {"status": "Logged", "current_risk_score": session.risk_score}
 
+@router.websocket("/proctor/stream/{session_id}")
+async def proctor_stream(websocket: WebSocket, session_id: int):
+    await websocket.accept()
+    try:
+        while True:
+            # Receive base64 image data from client
+            data = await websocket.receive_text()
+            
+            # Extract base64 part
+            if "," in data:
+                header, base64_data = data.split(",", 1)
+            else:
+                base64_data = data
+                
+            try:
+                img_bytes = base64.b64decode(base64_data)
+                
+                # Analyze frame
+                result = proctoring.analyze_frame(img_bytes)
+                
+                # Send back the analysis result
+                await websocket.send_json(result)
+            except Exception as e:
+                print(f"Error processing frame: {e}")
+                await websocket.send_json({"error": "Failed to process frame"})
+                
+    except WebSocketDisconnect:
+        print(f"WebSocket client {session_id} disconnected")
+    except Exception as e:
+        print(f"WebSocket error for {session_id}: {e}")

@@ -28,17 +28,21 @@ class Settings(BaseSettings):
     # Email
     MAIL_USERNAME: str = ""
     MAIL_PASSWORD: str = ""
-    MAIL_FROM: str = "noreply@agenticai.com"
+    MAIL_FROM: str = "noreply@aitutor.com"
     MAIL_PORT: int = 587
     MAIL_SERVER: str = "smtp.gmail.com"
     MAIL_STARTTLS: bool = True
     MAIL_SSL_TLS: bool = False
+    
+    # SendGrid
+    SENDGRID_API_KEY: Optional[str] = None
 
     # QuizAPI
     QUIZ_API_KEY: Optional[str] = None
 
-    # AI
+    # AI & Integrations
     GOOGLE_API_KEY: Optional[str] = None
+    GOOGLE_CLIENT_ID: Optional[str] = None
 
     model_config = SettingsConfigDict(case_sensitive=True, env_file=".env", extra="ignore")
 

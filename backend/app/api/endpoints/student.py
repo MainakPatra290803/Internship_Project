@@ -12,6 +12,29 @@ kt_engine = KnowledgeTracingEngine()
 
 from app.api import deps
 
+@router.get("/stats")
+def get_student_stats(db: Session = Depends(get_db), current_user: models.User = Depends(deps.get_current_user)):
+    user_id = current_user.id
+    student = db.query(models.Student).filter(models.Student.user_id == user_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    interactions = db.query(models.Interaction).filter(models.Interaction.student_id == student.user_id).all()
+    if not interactions:
+        interactions = db.query(models.Interaction).filter(models.Interaction.student_id == student.student_id).all()
+
+    total_time_ms = sum((i.response_time_ms or 0) for i in interactions)
+    total_minutes = round(total_time_ms / 60000)
+
+    # If they are very new, give them at least some credit for being here
+    if total_minutes == 0 and len(interactions) > 0:
+        total_minutes = 1
+
+    return {
+        "current_streak": student.current_streak,
+        "total_active_minutes": total_minutes
+    }
+
 @router.get("/dashboard", response_model=Dict[str, Any])
 def get_student_dashboard(db: Session = Depends(get_db), current_user: models.User = Depends(deps.get_current_user)):
     user_id = current_user.id
