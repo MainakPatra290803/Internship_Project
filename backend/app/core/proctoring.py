@@ -31,15 +31,9 @@ def download_file(url, path):
         except Exception as e:
             logger.error(f"Failed to download {url}: {e}")
 
-# Download models - wrap in try-except to prevent app crash
-try:
-    download_file(YOLO_CFG_URL, YOLO_CFG_PATH)
-    download_file(YOLO_WEIGHTS_URL, YOLO_WEIGHTS_PATH)
-    download_file(COCO_NAMES_URL, COCO_NAMES_PATH)
-except Exception as e:
-    logger.error(f"Model initialization error: {e}")
-
-# Initialize OpenCV Haar cascade for face detection
+# Initialize YOLO net as None - will be loaded only if files exist
+yolo_net = None
+classes = []
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 # Initialize YOLO for phone detection

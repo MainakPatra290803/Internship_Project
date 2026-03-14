@@ -49,3 +49,6 @@ stable-baselines3
 
 # Async
 anyio>=4.0.0
+
+# OpenCV
+opencv-python-headless
