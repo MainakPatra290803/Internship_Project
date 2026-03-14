@@ -6,9 +6,15 @@ const nextConfig: NextConfig = {
     // In local dev, it falls back to http://localhost:8000.
     let backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
     
-    // Ensure the URL has a protocol (Render blueprint 'host' property returns just the hostname)
+    // Ensure the URL has a protocol
     if (backendUrl && !backendUrl.startsWith('http') && !backendUrl.startsWith('/')) {
-      backendUrl = `https://${backendUrl}`;
+      // Internal Render hostnames (like 'service-name' or 'service-name-1wte') are HTTP only.
+      // Public Render URLs contain '.onrender.com' and support HTTPS.
+      if (backendUrl.includes('.onrender.com')) {
+        backendUrl = `https://${backendUrl}`;
+      } else {
+        backendUrl = `http://${backendUrl}`;
+      }
     }
 
     return [
