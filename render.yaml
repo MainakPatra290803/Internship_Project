@@ -41,4 +41,3 @@ services:
           name: ai-tutor-backend
           type: web
           property: host
-          envVarKey: RENDER_EXTERNAL_URL
