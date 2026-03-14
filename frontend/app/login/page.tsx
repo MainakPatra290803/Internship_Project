@@ -36,7 +36,14 @@ function LoginForm() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
             });
-            const data = await res.json();
+
+            let data;
+            try {
+                data = await res.json();
+            } catch (jsonErr) {
+                const text = await res.text();
+                throw new Error(text || 'Server error during Login');
+            }
 
             if (!res.ok) throw new Error(data.detail || 'Login failed');
 
@@ -100,7 +107,14 @@ function LoginForm() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
             });
-            const data = await res.json();
+
+            let data;
+            try {
+                data = await res.json();
+            } catch (jsonErr) {
+                const text = await res.text();
+                throw new Error(text || 'Server error while requesting reset');
+            }
 
             if (!res.ok) throw new Error(data.detail || 'Failed to send reset code');
 
@@ -126,7 +140,14 @@ function LoginForm() {
                     new_password: newPassword
                 })
             });
-            const data = await res.json();
+
+            let data;
+            try {
+                data = await res.json();
+            } catch (jsonErr) {
+                const text = await res.text();
+                throw new Error(text || 'Server error while resetting password');
+            }
 
             if (!res.ok) throw new Error(data.detail || 'Failed to reset password');
 
