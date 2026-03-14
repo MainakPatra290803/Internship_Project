@@ -47,11 +47,11 @@ export default function SignupPage() {
                 body: JSON.stringify({ email, otp, password })
             });
 
+            const text = await res.text();
             let data;
             try {
-                data = await res.json();
+                data = JSON.parse(text);
             } catch (jsonErr) {
-                const text = await res.text();
                 throw new Error(text || 'Server error during signup');
             }
 
@@ -80,11 +80,11 @@ export default function SignupPage() {
                 body: JSON.stringify({ credential: credentialResponse.credential })
             });
 
+            const text = await res.text();
             let data;
             try {
-                data = await res.json();
+                data = JSON.parse(text);
             } catch (jsonErr) {
-                const text = await res.text();
                 throw new Error(text || 'Server error during Google Signup');
             }
 

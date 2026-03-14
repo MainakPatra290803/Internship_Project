@@ -37,11 +37,12 @@ function LoginForm() {
                 body: JSON.stringify({ email, password })
             });
 
+            const text = await res.text();
             let data;
             try {
-                data = await res.json();
+                data = JSON.parse(text);
             } catch (jsonErr) {
-                const text = await res.text();
+                // If not JSON, it's a raw crash message or HTML
                 throw new Error(text || 'Server error during Login');
             }
 
@@ -76,11 +77,11 @@ function LoginForm() {
                 body: JSON.stringify({ credential: credentialResponse.credential })
             });
 
+            const text = await res.text();
             let data;
             try {
-                data = await res.json();
+                data = JSON.parse(text);
             } catch (jsonErr) {
-                const text = await res.text();
                 throw new Error(text || 'Server error during Google Login');
             }
 
@@ -108,11 +109,11 @@ function LoginForm() {
                 body: JSON.stringify({ email })
             });
 
+            const text = await res.text();
             let data;
             try {
-                data = await res.json();
+                data = JSON.parse(text);
             } catch (jsonErr) {
-                const text = await res.text();
                 throw new Error(text || 'Server error while requesting reset');
             }
 
@@ -141,11 +142,11 @@ function LoginForm() {
                 })
             });
 
+            const text = await res.text();
             let data;
             try {
-                data = await res.json();
+                data = JSON.parse(text);
             } catch (jsonErr) {
-                const text = await res.text();
                 throw new Error(text || 'Server error while resetting password');
             }
 
