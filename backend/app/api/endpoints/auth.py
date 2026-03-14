@@ -244,11 +244,13 @@ async def google_login(request: schemas.GoogleLoginRequest = Body(...), db: Sess
         
     except ValueError as e:
         # Invalid token
-        print(f"GOOGLE AUTH ERROR: {e}")
-        raise HTTPException(status_code=400, detail="Invalid Google token")
+        print(f"GOOGLE TOKEN VALIDATION ERROR: {e}")
+        raise HTTPException(status_code=400, detail=f"Google Token Validation Error: {str(e)}")
     except Exception as e:
-        print(f"GOOGLE LOGIN ERROR: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"CRITICAL GOOGLE LOGIN ERROR:\n{error_details}")
+        raise HTTPException(status_code=500, detail=f"Backend Error: {str(e)}")
 
 
 @router.post("/request-password-reset")
