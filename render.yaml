@@ -10,14 +10,9 @@ services:
     rootDir: backend
     buildCommand: chmod +x build.sh && ./build.sh
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
-    # Persistent Disk for SQLite
-    disk:
-      name: sqlite-data
-      mountPath: /var/data
-      sizeGB: 1
     envVars:
       - key: DATABASE_URL
-        value: sqlite:////var/data/sql_app.db
+        value: sqlite:///./sql_app.db
       - key: SECRET_KEY
         generateValue: true
       - key: GOOGLE_API_KEY
