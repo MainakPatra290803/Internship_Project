@@ -1,6 +1,9 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from sqlalchemy import text
+import os
 from app.core.config import settings
 from app.core.database import get_db, get_base, get_engine
 from app.models import models
@@ -22,7 +25,11 @@ app = FastAPI(
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    print(f"Global Exception: {exc}") # Print to console/logs
+    error_msg = f"Global Exception at {request.url.path}: {str(exc)}"
+    print(error_msg) # Print to console/logs
+    # Log to a file for persistent debugging on Render (within the session)
+    with open("error_log.txt", "a") as f:
+        f.write(f"{error_msg}\n")
     return JSONResponse(
         status_code=500,
         content={"detail": f"Internal Server Error: {str(exc)}"},
@@ -78,8 +85,25 @@ def startup_event():
 
 
 @app.get("/health")
-def health_check():
-    return {"status": "ok", "app_name": settings.PROJECT_NAME}
+def health_check(db: Session = Depends(get_db)):
+    health_status = {
+        "status": "ok",
+        "app_name": settings.PROJECT_NAME,
+        "database": "connected",
+        "models_status": {
+            "yolo_cfg": os.path.exists("models/yolov3-tiny.cfg"),
+            "yolo_weights": os.path.exists("models/yolov3-tiny.weights")
+        }
+    }
+    
+    # Try a simple DB query
+    try:
+        db.execute(text("SELECT 1"))
+    except Exception as e:
+        health_status["database"] = f"error: {str(e)}"
+        health_status["status"] = "error"
+        
+    return health_status
 
 @app.get("/")
 def root():

@@ -25,4 +25,8 @@ if [ ! -f models/coco.names ]; then
     curl -o models/coco.names https://raw.githubusercontent.com/pjreddie/darknet/master/data/coco.names
 fi
 
+# Seed database with initial data
+echo "Running database seeding..."
+python seed_db.py
+
 echo "Build completed successfully."
