@@ -23,11 +23,16 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
+from starlette.exceptions import HTTPException as StarletteHTTPException
+
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
+    if isinstance(exc, StarletteHTTPException):
+        # Let FastAPI's default handler (or specific ones) take care of HTTPExceptions
+        return await request.app.default_exception_handlers[StarletteHTTPException](request, exc)
+
     error_msg = f"Global Exception at {request.url.path}: {str(exc)}"
-    print(error_msg) # Print to console/logs
-    # Log to a file for persistent debugging on Render (within the session)
+    print(error_msg)
     with open("error_log.txt", "a") as f:
         f.write(f"{error_msg}\n")
     return JSONResponse(
