@@ -8,6 +8,7 @@ load_dotenv()
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Personalized AI Tutor"
     API_V1_STR: str = "/api/v1"
+    DEBUG: bool = False # Default to False for production
     
     # CORS
     BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:3000"]
