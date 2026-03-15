@@ -19,7 +19,12 @@ export default function Home() {
   useEffect(() => {
     const checkHealth = async () => {
       try {
-        const res = await fetch('/health');
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
+        const healthUrl = backendUrl 
+          ? (backendUrl.endsWith('/') ? `${backendUrl}health` : `${backendUrl}/health`)
+          : '/health';
+          
+        const res = await fetch(healthUrl);
         if (res.ok) setHealthStatus('online');
         else setHealthStatus('offline');
       } catch (e) {

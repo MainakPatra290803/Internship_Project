@@ -56,20 +56,8 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={"detail": f"{type(exc).__name__}: {detail}"},
     )
 
-# Build CORS allowed origins - includes localhost for dev + any configured production frontend
-origins = [
-    "http://localhost",
-    "http://localhost:3000",
-    "http://127.0.0.1",
-    "http://127.0.0.1:3000",
-]
-
-# Add production frontend URL if configured
-if settings.FRONTEND_URL:
-    origins.append(settings.FRONTEND_URL)
-    # Also add https variant
-    if settings.FRONTEND_URL.startswith("http://"):
-        origins.append(settings.FRONTEND_URL.replace("http://", "https://"))
+# Build CORS allowed origins
+origins = ["*"] # Broad for debugging, will tighten later
 
 app.add_middleware(
     CORSMiddleware,
