@@ -24,10 +24,13 @@ export default function Home() {
           ? (backendUrl.endsWith('/') ? `${backendUrl}health` : `${backendUrl}/health`)
           : '/health';
           
+        console.log("Checking health at:", healthUrl);
         const res = await fetch(healthUrl);
+        console.log("Health response:", res.status);
         if (res.ok) setHealthStatus('online');
         else setHealthStatus('offline');
       } catch (e) {
+        console.error("Health check failed:", e);
         setHealthStatus('offline');
       }
     };

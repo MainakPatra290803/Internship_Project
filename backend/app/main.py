@@ -57,15 +57,27 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 # Build CORS allowed origins
-origins = ["*"] # Broad for debugging, will tighten later
-
+# For security when allow_credentials=True, origins must be explicit OR use '*' and allow_credentials=False
+# Since we need credentials for Auth, we use the request's origin if it matches a pattern, or just echo it for now for debug
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"] if settings.DEBUG else ["https://ai-tutor-frontend-17jd.onrender.com", "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Better: use a middleware to echo the origin if we want broad access with credentials
+@app.middleware("http")
+async def add_cors_header(request: Request, call_next):
+    response = await call_next(request)
+    origin = request.headers.get("origin")
+    if origin:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Methods"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+    return response
 
 app.include_router(learning.router, prefix="/api/v1/learning", tags=["learning"])
 
