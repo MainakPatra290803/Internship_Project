@@ -183,3 +183,35 @@ async def generate_quiz_from_notes(
         traceback.print_exc()
         db.rollback()
         return {"error": error_msg}
+
+@router.get("/ai-test")
+async def test_ai_connection():
+    """
+    Public diagnostic endpoint. Tests the Gemini API and returns the raw response or error.
+    This helps diagnose key issues without requiring authentication.
+    """
+    import os
+    client = llm.get_llm_client()
+    model_name = getattr(client, 'model_name', 'MockLLM')
+    api_key = os.getenv("GOOGLE_API_KEY", "NOT_SET")
+    key_preview = f"{api_key[:8]}...{api_key[-4:]}" if len(api_key) > 12 else "INVALID"
+    
+    try:
+        response = await client.generate_text(
+            system_prompt="You are a helpful assistant.",
+            user_prompt="Say 'AI is working!' in exactly 5 words."
+        )
+        return {
+            "status": "success",
+            "model": model_name,
+            "key_preview": key_preview,
+            "response": response
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "model": model_name,
+            "key_preview": key_preview,
+            "error_type": type(e).__name__,
+            "error_detail": str(e)
+        }
