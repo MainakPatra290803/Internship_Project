@@ -134,7 +134,7 @@ class GoogleGeminiProvider(LLMProvider):
     def __init__(self, api_key: str):
         # New official google-genai SDK (v1+)
         self.client = genai.Client(api_key=api_key)
-        self.model_name = "models/gemini-1.5-flash" 
+        self.model_name = "gemini-1.5-flash" 
 
     async def generate_text(self, system_prompt: str, user_prompt: str) -> str:
         try:
@@ -151,7 +151,7 @@ class GoogleGeminiProvider(LLMProvider):
             print(f"Gemini Text Error: {type(e).__name__}: {e}")
             if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
                 return "⚠️ The AI is rate-limited right now. Please wait ~30 seconds and try again."
-            return f"⚠️ AI error: {type(e).__name__}. Please try again."
+            return f"⚠️ AI error [{type(e).__name__}]: {error_str}"
 
     async def generate_chat_response(self, messages: List[Dict[str, str]], system_prompt: Optional[str] = None) -> str:
         contents = []
@@ -178,7 +178,7 @@ class GoogleGeminiProvider(LLMProvider):
             print(f"Gemini Chat Error: {type(e).__name__}: {e}")
             if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
                 return "⚠️ The AI is rate-limited right now. Please wait ~30 seconds and try again."
-            return f"⚠️ AI error: {type(e).__name__}. Please try again."
+            return f"⚠️ AI error [{type(e).__name__}]: {error_str}"
 
     async def generate_json(self, system_prompt: str, user_prompt: str, schema: Dict[str, Any]) -> Dict[str, Any]:
         try:
