@@ -15,10 +15,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi import WebSocket, WebSocketDisconnect
 import json
 
-# Create all tables
-Base = get_base()
-engine = get_engine()
-Base.metadata.create_all(bind=engine)
+# Tables are initialized in the startup event (not at import time)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -99,12 +96,14 @@ app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 @app.on_event("startup")
 def startup_event():
-    # Tables are created by alembic or manually via seed_db.py usually, 
-    # but for dev convenience we can keep create_all
-    Base = get_base()
-    engine = get_engine()
-    Base.metadata.create_all(bind=engine)
-    print("Database initialized.")
+    try:
+        Base = get_base()
+        engine = get_engine()
+        Base.metadata.create_all(bind=engine)
+        print("Database initialized.")
+    except Exception as e:
+        print(f"WARNING: Database initialization failed: {e}")
+        print("App will still start - DB may connect on first request")
 
 
 @app.get("/health")
