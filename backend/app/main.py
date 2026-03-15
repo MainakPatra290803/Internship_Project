@@ -91,6 +91,8 @@ app.include_router(ai_features.router, prefix="/api/v1/ai", tags=["ai-features"]
 app.include_router(planner.router, prefix="/api/v1/planner", tags=["planner"])
 
 
+import pathlib
+pathlib.Path("uploads").mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 
