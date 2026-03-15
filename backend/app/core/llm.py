@@ -133,8 +133,7 @@ class GoogleGeminiProvider(LLMProvider):
     def __init__(self, api_key: str):
         # New official google-genai SDK (v1+)
         self.client = genai.Client(api_key=api_key)
-        self.model_name = "gemini-1.5-flash" # Use 1.5 as primary for better quota stability
-        self.fallback_model = "gemini-2.0-flash" 
+        self.model_name = "gemini-1.5-flash" # Primary and only model
 
     async def generate_text(self, system_prompt: str, user_prompt: str) -> str:
         try:
@@ -150,12 +149,7 @@ class GoogleGeminiProvider(LLMProvider):
             error_str = str(e)
             print(f"Gemini Text Error: {type(e).__name__}: {e}")
             
-            # Auto-fallback for 404 errors
-            if "404" in error_str and self.model_name != self.fallback_model:
-                 print(f"DEBUG: 404 on {self.model_name}, falling back to {self.fallback_model}")
-                 self.model_name = self.fallback_model
-                 return await self.generate_text(system_prompt, user_prompt)
-
+            # Fallback and rate limit handling
             if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
                 return "⚠️ The AI is rate-limited right now. Please wait ~30 seconds and try again."
             return f"⚠️ AI error [{type(e).__name__}]: {error_str}"
@@ -184,12 +178,7 @@ class GoogleGeminiProvider(LLMProvider):
             error_str = str(e)
             print(f"Gemini Chat Error: {type(e).__name__}: {e}")
             
-            # Auto-fallback for 404 errors
-            if "404" in error_str and self.model_name != self.fallback_model:
-                 print(f"DEBUG: 404 on {self.model_name}, falling back to {self.fallback_model}")
-                 self.model_name = self.fallback_model
-                 return await self.generate_chat_response(messages, system_prompt)
-
+            # Fallback and rate limit handling
             if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
                 return "⚠️ The AI is rate-limited right now. Please wait ~30 seconds and try again."
             return f"⚠️ AI error [{type(e).__name__}]: {error_str}"
