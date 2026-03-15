@@ -133,7 +133,7 @@ class GoogleGeminiProvider(LLMProvider):
     def __init__(self, api_key: str):
         # New official google-genai SDK (v1+)
         self.client = genai.Client(api_key=api_key)
-        self.model_name = "gemini-1.5-flash" # Primary and only model
+        self.model_name = "gemini-2.0-flash" # Supported on v1beta API
 
     async def generate_text(self, system_prompt: str, user_prompt: str) -> str:
         try:
