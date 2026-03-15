@@ -55,8 +55,7 @@ def get_ai_client_instance():
     This allows hot-swapping API keys without restarting the server.
     """
     import os
-    from dotenv import load_dotenv
-    load_dotenv(override=True)  # Re-read .env to pick up any key changes
+    # load_dotenv(override=True)  # REMOVED: Render environment variables should take precedence
     global _ai_client, _ai_client_key
     current_key = os.getenv("GOOGLE_API_KEY", "")
     if _ai_client is None or _ai_client_key != current_key:
