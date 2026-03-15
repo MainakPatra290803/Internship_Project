@@ -8,8 +8,7 @@ from google.genai import types as genai_types
 from PIL import Image
 import io
 import base64
-from dotenv import load_dotenv
-load_dotenv(override=True)  # Always reload .env so key changes take effect
+# load_dotenv(override=True)  # REMOVED: Render environment variables should take precedence
 
 class LLMProvider(ABC):
     @abstractmethod
@@ -253,7 +252,7 @@ def get_llm_client() -> LLMProvider:
     # Always re-read .env to pick up any hot-swapped API keys (e.g. from Google AI Studio)
     import os
     from dotenv import load_dotenv
-    load_dotenv(override=True)
+    load_dotenv() # Read .env if present, but DO NOT override real OS environment vars
 
     if os.getenv("USE_LOCAL_LLM", "false").lower() == "true":
         model_name = os.getenv("LOCAL_MODEL_NAME", "TinyLlama/TinyLlama-1.1B-Chat-v1.0")
